@@ -12,19 +12,13 @@ def parse_one_input(str):
   indexes = colon[0].split(' ')
   dict['n'] = int(indexes[1])
   draws = colon[1].split(';')
-  # print('draws :', draws)
   for draw in draws:
     colors = draw.split(',')
-    # print('colors :', colors)
     for color in colors:
       color = color[1:]
-      # print('color :', color)
       words = color.split(' ')
-      # print('words :', words)
       if (dict[words[1]] < int(words[0])):
         dict[words[1]] = int(words[0])
-  #print('dict :', dict)
-  print()
   return dict
     
 
