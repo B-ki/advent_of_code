@@ -9,7 +9,7 @@ def check_num():
     # print(h)
     # print(w)
     s = ''
-    sum_result = 0
+    one_char = []
     for j in range(h):
         for i in range(w):
             # print('i :', i, ', j:', j, 'lines:', lines[j][i])
@@ -20,35 +20,38 @@ def check_num():
                     ret = add_to_sum_result_if_valid(w, j - 1, s)
                 else:
                     ret = add_to_sum_result_if_valid(i, j, s)
-                if ret > 0:
-                    sum_result += ret
+                if ret != None:
+                    one_char.append(ret)
                 s = ''
         i = 0
-    return sum_result
+    new_dict = {}
+    for k in range(len(one_char)):
+        for l in range(len(one_char)):
+            if k != l and one_char[k][1] == one_char[l][1] and one_char[k][2] == one_char[l][2]:
+                key = one_char[k][1] + one_char[k][2] * w
+                # print('key', key)
+                if key not in new_dict:
+                    new_dict[key] = [one_char[k][0]]
+                    # print('adding to new_dict :', one_char[k][0])
+                else:
+                    new_dict[key].append(one_char[k][0])
+    ret = 0
+    # print( 'new_dict :', new_dict)
+    for s in new_dict.values():
+        if len(s) == 2:
+            ret += s[0] * s[1]
+    return ret
 
 
 def add_to_sum_result_if_valid(i, j, s):
-    # print(s)
     size = len(s)
     start_i = i - len(s)
-    # if s.isdigit():
-    #     print('add_to_sum', s)
-    #     print('i:', i, 'j:', j, size, start_i)
-    #     print(max(0, start_i - 1), min(w - 1, i))
-    #     print(max(0, j - 1), min(h - 1, j + 1))
     for v in range(max(0, j - 1), min(h - 1, j + 1) + 1):
         for u in range(max(0, start_i - 1), min(w - 1, i) + 1):
-            # if s.isdigit():
-            #     print('u :', u, ', v:', v, 'lines:', lines[v][u])
             if not (lines[v][u].isdigit() or lines[v][u] == '.'):
-                # print('tada')
                 if s.isdigit():
-                    print('adding : ', int(s))
-                    return int(s)
-    return 0
-
-
-ready = True
+                    # print('adding : ', int(s), u, v)
+                    return (int(s), u, v)
 
 
 def get_delimiter(lines):
@@ -63,6 +66,9 @@ def get_delimiter(lines):
     print('delimiters :', unique_char)
 
 
+ready = True
+
+
 if not ready:
     file = open('test8', 'r')
     lines = file.readlines()
@@ -73,6 +79,9 @@ if not ready:
     w = len(lines[0])
     R = check_num()
     print(R)
+    print('Should get :', 755 * 598)
+    print('and not :', 114 * 467 * 35 + 755 * 598)
+    assert R == (755 * 598)
 else:
     file = open('input', 'r')
     lines = file.readlines()
