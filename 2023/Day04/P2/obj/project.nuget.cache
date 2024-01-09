@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gLAg/5zRv287ThPNH4YyMZeBXGLeXWR6hSioAjLScnoSJ2/u7oHKYdp2yiynoxN2ptr+7k8bSdnhgkF0WN1aFg==",
+  "dgSpecHash": "vT89wIypgQDj1Hdz8QTe1cqNHMjfdDqqiQ2QUfgSC0ywQGtRczxQl9BQQSQzLX6GCDQ+gEvSJm6HKRX7pyTMQg==",
   "success": true,
-  "projectFilePath": "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/Day04.csproj",
+  "projectFilePath": "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/Day04.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

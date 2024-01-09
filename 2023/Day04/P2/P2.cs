@@ -9,11 +9,12 @@ namespace P2
 	{
 		public static int value;
 	}
+
 	class Program
 	{
 		static void Main()
 		{
-			string inputFile = "test.txt";
+			string inputFile = "input.txt";
 			List<string> lines = File.ReadAllLines(inputFile).ToList();
 
 			List<Card> cards = new List<Card>();
@@ -34,15 +35,17 @@ namespace P2
 			}
 
 			int totCards = cards.Count();
+			Console.WriteLine($"totCards = {totCards}");
 			int res = 0;
 
 			foreach(Card card in cards)
 			{
-				for (int i = card.Number + 1; i <= card.Number + card.TotPoint && i < totCards; i++)
+				Console.WriteLine($"Card {card.Number} : totWinner = {card.TotPoint} and nbOfTime = {cardDict[card.Number]}");
+				for (int i = card.Number + 1; i <= card.Number + card.TotPoint && i <= totCards; i++)
 				{
 					cardDict[i] = cardDict[i] + cardDict[card.Number];
+					//Console.WriteLine($"i = {i}");
 				}
-				Console.WriteLine($"Card {card.Number} : totWinner = {card.TotPoint} and nbOfTime = {cardDict[card.Number]}");
 				res += cardDict[card.Number];
 			}
 			Console.WriteLine($"TOTAL : {res}");
@@ -52,7 +55,6 @@ namespace P2
 	class Card
 	{
 		// Class members
-
 		public int Number { get; private set; }
 		public string[] WinNumbers { get; private set; }
 		public string[] MyNumbers { get; private set; }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/Day04.csproj": {}
+    "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/Day04.csproj": {}
   },
   "projects": {
-    "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/Day04.csproj": {
+    "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/Day04.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/Day04.csproj",
+        "projectUniqueName": "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/Day04.csproj",
         "projectName": "Day04",
-        "projectPath": "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/Day04.csproj",
+        "projectPath": "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/Day04.csproj",
         "packagesPath": "/home/rmorel/.nuget/packages/",
-        "outputPath": "/home/rmorel/PERSO/advent_of_code/2023/Day04/P2/obj/",
+        "outputPath": "/home/rmorel/PERSO/1.CodeChallenges/advent_of_code/2023/Day04/P2/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/rmorel/.nuget/NuGet/NuGet.Config"
