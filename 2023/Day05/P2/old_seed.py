@@ -26,6 +26,17 @@ def seed_to_location(value: int, matrixes: List[List[List[int]]]) -> int:
         result = translate_with_mat(result, matrix)
     return result
 
+def create_seed(seeds: List[int]) -> List[int]:
+    '''create all seed list for P2'''
+    res: List[int] = []
+    for i in range(len(seeds)):
+        if i % 2 == 1:
+            pass
+        else:
+            for j in range(seeds[i + 1]):
+                res.append(seeds[i] + j)
+    return res
+
 def main():
     path = "input"
     seeds_file_path = f"../{path}/seeds"
@@ -49,6 +60,7 @@ def main():
                 water_to_light_mat, light_to_temperature_mat, 
                 temperature_to_humidity_mat, humidity_to_location_mat]
     print(seeds)
+    seeds_P2 = create_seed(seeds)
     print(seed_to_soil_mat)
     print(soil_to_fert_mat)
     print(fert_to_water_mat)
@@ -57,7 +69,7 @@ def main():
     print(temperature_to_humidity_mat)
     print(humidity_to_location_mat)
     locations: List[int] = []
-    for s in seeds:
+    for s in seeds_P2:
         locations.append(seed_to_location(int(s), all_map))
     print(locations)
     print(min(locations))
