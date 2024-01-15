@@ -25,7 +25,7 @@ def create_seed(seeds: np.ndarray) -> List[List[int]]:
     '''create all seed list for P2'''
     res: List[List[int]] = []
     for s0, s1 in zip(seeds[::2], seeds[1::2]):
-        res.append([s0, s0 + s1])
+        res.append([s0, s0 + s1 - 1])
     return res
 
 def optimize_path_translation(seed_ranges: List[List[int]], all_map: List[np.ndarray]) -> int:
@@ -62,7 +62,7 @@ def optimize_path_translation(seed_ranges: List[List[int]], all_map: List[np.nda
     return min(min_values)
 
 def main():
-    path = "test"
+    path = "input"
     seeds_file_path = f"../{path}/seeds"
     seed_to_soil_file_path = f"../{path}/seed-to-soil"
     soil_to_fert_file_path = f"../{path}/soil-to-fertilizer"
