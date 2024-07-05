@@ -1,0 +1,27 @@
+1 J :
+
+1 1 1 1 J -> 1 1 1 1 1 : J becomes highest occurence card
+
+1 1 1 2 J -> 1 1 1 2 1 : J becomes highest occurrence card
+
+1 1 2 2 J -> 1 1 2 2 2 : J becomes highest occurrence card with highest value
+
+1 2 3 3 J -> 1 2 3 3 3 : J becomes highest occurrence card 
+
+2 J :
+
+J J 1 1 1 -> 1 1 1 1 1 : J becomes highest occurrence card
+
+J J 1 1 2 -> 1 1 1 1 1 : J becomes highest occurrence card
+
+J J 1 2 3 -> 1 1 1 1 1 : J becomes highest occurrence card
+
+3 J : 
+
+J J J 1 1 -> 1 1 1 1 1 : J becomes highest occurrence card
+
+J J J 1 2 -> 2 2 2 2 2 : J becomes highest occurrence card with highest value
+
+4 J :
+
+J J J J 1 -> 1 1 1 1 1 : J becomes highest occurrence card
