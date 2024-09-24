@@ -5,7 +5,7 @@ from typing import List
 
 
 list_values = ['high_card', 'one_pair', 'two_pairs', 'three_of_a_kind', 'full_house', 'four_of_a_kind', 'five_of_a_kind']
-list_cards = ['', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+list_cards = ['', 'J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A']
 
 def read_input(file_path: str) -> DataFrame: 
     '''Read input and return as DataFrame'''
@@ -22,30 +22,20 @@ def read_input(file_path: str) -> DataFrame:
     df = pd.DataFrame({'hands': hands, 'bids': bids})
     
     type_order = CategoricalDtype(categories=list_values, ordered=True)
-    print(type_order)
-    print(df)
  
     df['new_hand'] = df['hands'].apply(convert_hand)
-    print(df)
     df['types'] = df['new_hand'].apply(get_type)
-    print(df)
-    df['h_card'] = df['new_hand'].apply(get_highest_occurence_card)
-    print(df)
     df['types'] = df['types'].astype(type_order)
-    print(df)
 
     df = df.sort_values(by=['types', 'bids'], ascending=[True, True])
 
-    df['card_one'] = df['new_hand'].apply(convert_hand_to_value_card_one)
-    df['card_two'] = df['new_hand'].apply(convert_hand_to_value_card_two)
-    df['card_three'] = df['new_hand'].apply(convert_hand_to_value_card_three)
-    df['card_four'] = df['new_hand'].apply(convert_hand_to_value_card_four)
-    df['card_five'] = df['new_hand'].apply(convert_hand_to_value_card_five)
+    df['card_one'] = df['hands'].apply(convert_hand_to_value_card_one)
+    df['card_two'] = df['hands'].apply(convert_hand_to_value_card_two)
+    df['card_three'] = df['hands'].apply(convert_hand_to_value_card_three)
+    df['card_four'] = df['hands'].apply(convert_hand_to_value_card_four)
+    df['card_five'] = df['hands'].apply(convert_hand_to_value_card_five)
 
-    print(df)
-
-    df = df.sort_values(by=['types', 'h_card', 'card_one', 'card_two', 'card_three', 'card_four', 'card_five'], ascending=[True, True, True, True, True, True, True])
-    print(df)
+    df = df.sort_values(by=['types', 'card_one', 'card_two', 'card_three', 'card_four', 'card_five'], ascending=[True, True, True, True, True, True])
 
     # Reset index otherwise rows are not sorted, and index is wrong
     df = df.reset_index(drop=True)
@@ -96,17 +86,12 @@ def get_highest_occurence_value_card_other_than_jack(hand: str) -> str:
     hand_without_jack = hand.replace('J', '')
     max_occurence = 0
     max_occurence_card = ''
-    #print('hand_without_jack', hand_without_jack)
     for card in hand_without_jack:
-        #print('card in loop :', card, 'count :', hand_without_jack.count(card))
-        #print('max occurence card :', max_occurence_card, 'max occurence :', max_occurence)
         if ((hand_without_jack.count(card) > max_occurence) 
             or (hand_without_jack.count(card) == max_occurence 
                 and convert_card_to_value(card) > convert_card_to_value(max_occurence_card))):
             max_occurence = hand_without_jack.count(card)
             max_occurence_card = card
-    #print(max_occurence_card)
-    #print(max_occurence)
     return max_occurence_card
 
 
@@ -114,7 +99,13 @@ def convert_hand(hand: str) -> str:
     '''Transform J in hand to the best card'''
     if hand.count('J') == 0:
         return hand
-    return hand.replace('J', get_highest_occurence_value_card_other_than_jack(hand))
+    if hand.count('J') == 5:
+        return 'AAAAA'
+    new_hand = hand.replace('J', get_highest_occurence_value_card_other_than_jack(hand))
+    if len(new_hand) != 5:
+        print('hand', hand, ', new_hand', new_hand)
+        raise TypeError('Error in hand conversion')
+    return new_hand
 
 
 def test_get_type() -> None:
@@ -166,7 +157,8 @@ def get_score(df: DataFrame) -> int:
 def main():
     test_get_type()
     df_test = read_input('test_input.txt')
-    assert(get_score(df_test) == 6440)
+    assert(get_score(df_test) == 5905)
+    print('Test passed')
 
     df = read_input('inputP1.txt')
     print(df)
