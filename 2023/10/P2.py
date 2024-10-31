@@ -2,6 +2,27 @@ import numpy as np
 from typing import List, Tuple
 
 
+class colors:
+    GREEN = '\033[92m'
+    END = '\033[0m'
+    RED = '\033[91m'
+
+
+def pretty_print(data: np.array):
+    """
+    Pretty print the maze
+    """
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            if data[i, j] == "0":
+                print(colors.RED + data[i, j] + colors.END, end = " ")
+            elif data[i, j] == "X":
+                print(colors.GREEN + data[i, j] + colors.END, end = " ")
+            else:
+                print(data[i, j], end = " ")
+        print("")
+
+
 def read_input(file_path: str) -> np.array:
     """
     Transform the input file into a numpy array, each char is a value
@@ -15,19 +36,19 @@ def read_input(file_path: str) -> np.array:
 def find_start(data: np.array) -> tuple:
     """
     Find the starting point of the maze    """
-    for x in range(data.shape[0]):
-        for y in range(data.shape[1]):
+    print(data.shape)
+    for x in range(data.shape[1]):
+        for y in range(data.shape[0]):
             if data[y, x] == "S":
                 print("Found start at: ", x, y)
                 return (x, y)
     return None
 
 
-def find_first_cells(map2d: np.array) -> List[Tuple]:
+def find_first_cells(map2d: np.array, sx: int, sy: int) -> List[Tuple]:
     """
     Find cells that are valid
     """
-    (sx, sy) = find_start(map2d)
     valid_first_cells = []
     if map2d[sy, sx + 1] == '-' or map2d[sy, sx + 1] == 'J' or map2d[sy, sx + 1] == '7':
         valid_first_cells.append((sx + 1, sy))
@@ -80,62 +101,121 @@ def get_next_cells(map2d: np.array, cell: tuple, previous_cell: tuple) -> List[T
     return [(nx, ny), (x, y)]
 
 
-def is_inside(list_path: List[Tuple], cell: Tuple) -> bool:
-    """
-    Check if cell inside the boundary
-    """
+def inside(cell: tuple, map2d: np.array, list_boundary: List[Tuple], 
+           color: str) -> bool:
     (x, y) = cell
-    inside = 0
-    for (i, j) in list_path:
-        if inside == 4:
-            return True
-        if i == x and j > y:
-            inside += 1
-        elif i == x and j < y:
-            inside += 1
-        elif i > x and j == y:
-            inside += 1
-        elif i < x and j == y:
-            inside += 1
-    if inside == 4:
-        return True
-    return False
+    print_data = False
+    if color == "0":
+        print_data = True
+    if map2d[y, x] == color or map2d[y, x] == '0':
+        if print_data:
+            print("Cell: ", x, y, " is colored by 0 already")
+        return False
+    if (x, y) in list_boundary:
+        if print_data:
+            print("Cell: ", x, y, " is a boundary")
+        return False
+    if print_data:
+        print("Cell: ", x, y, " is inside")
+    return True
+
+
+def flood_fill(map2d: np.array, boundaries: List[Tuple], 
+               color: str, start_cell: Tuple) -> int:
+    """
+    Flood fill the maze
+    """
+    if not inside(start_cell, map2d, boundaries, color):
+        return 0
+    map2d[start_cell[1], start_cell[0]] = color
+    cell_inside = []
+    stack = []
+    stack.append(start_cell)
+    while len(stack) > 0:
+        (x, y) = stack.pop()
+        nx = x
+        while nx - 1 >= 0 and inside((nx - 1, y), map2d, boundaries, color):
+            cell_inside.append((nx - 1, y))
+            map2d[y, nx - 1] = color
+            nx = nx - 1
+        while x <= map2d.shape[1] and inside((x, y), map2d, boundaries, color):
+            cell_inside.append((x, y))
+            map2d[y, x] = color
+            x = x + 1
+            stack = scan(nx, x - 1, y + 1, stack, map2d, boundaries, color)
+            stack = scan(nx, x - 1, y - 1, stack, map2d, boundaries, color)
+    return len(cell_inside)
+
+
+def scan(lx: int, rx: int, y: int, stack: List[Tuple], 
+         map2d: np.array, color: str, boundaries: List[Tuple]) -> List[Tuple]:
+    cell_added = False
+    for x in range(lx, rx):
+        if not inside((x, y), map2d, boundaries, color):
+            cell_added = False
+        elif not cell_added:
+            stack.append((x, y))
+            cell_added = True
+    return stack
+
+
+def get_boundaries(map2d: np.array) -> List[Tuple]:
+    """
+    Get the boundaries of the maze
+    """
+    (sx, sy) = find_start(map2d)
+    valid_first_cells = find_first_cells(map2d, sx, sy)
+    cell = valid_first_cells[0]
+    prev_cell = (sx, sy)
+    boundaries = []
+    boundaries.append((sx, sy))
+    while cell != (sx, sy):
+        boundaries.append(cell)
+        cell, prev_cell = get_next_cells(map2d, cell, prev_cell)
+    return boundaries
 
 
 def run_through_maze(map2d: np.array) -> int:
     """
-    Run through and find furthest cell from start
+    Run through the maze
     """
-    (sx, sy) = find_start(map2d)
-    count: int = 0
-    count2: int = 0
-    valid_first_cells = find_first_cells(map2d)
-    active_cell1 = valid_first_cells[0]
-    previous_cell1 = (sx, sy)
-    active_cell2 = valid_first_cells[1]
-    previous_cell2 = (sx, sy)
-    while active_cell1 != (sx, sy) or active_cell2 != (sx, sy):
-        print("cell1: ", active_cell1, ", cell2: ", active_cell2)
-        count += 1
-        active_cell1, previous_cell1 = get_next_cells(map2d, 
-                                                    active_cell1, 
-                                                    previous_cell1)
-        count2 += 1
-        active_cell2, previous_cell2 = get_next_cells(map2d, 
-                                                    active_cell2, 
-                                                    previous_cell2)
-    return round((max(count, count2) + 1)/ 2)
+    boundaries = get_boundaries(map2d)
+    for i in range(map2d.shape[1]):
+        flood_fill(map2d, boundaries, "0", (i, 0))
+        flood_fill(map2d, boundaries, "0", (i, map2d.shape[0] - 1))
+    for j in range(map2d.shape[0]):
+        flood_fill(map2d, boundaries, "0", (0, j))
+        flood_fill(map2d, boundaries, "0", (map2d.shape[1] - 1, j))
+    print("After filling with 0")
+    pretty_print(map2d)
+    count = 0
+    for i in range(map2d.shape[1]):
+        for j in range(map2d.shape[0]):
+            if map2d[j, i] != "0" and (i, j) not in boundaries:
+                count += flood_fill(map2d, boundaries, "X", (i, j))
+    print("After filling with X")
+    pretty_print(map2d)
+    # count value like "X" in map2d
+    count = np.count_nonzero(map2d == "X")
+    return count
 
 
 def main():
     print("Hello")
     data_test1 = read_input("input_test1.txt")
-    print(data_test1)
+    print("Data test 1 :")
+    pretty_print(data_test1)
+    print(run_through_maze(data_test1))
     data_test2 = read_input("input_test2.txt")
-    assert(run_through_maze(data_test1) == 4)
-    assert(run_through_maze(data_test2) == 8)
-    data = read_input("input.txt")
-    print(run_through_maze(data))
+    print("Data test 2 :")
+    pretty_print(data_test2)
+    print(run_through_maze(data_test2))
+    data_test3 = read_input("input3.txt")
+    print("Data test 3 :")
+    pretty_print(data_test3)
+    print(run_through_maze(data_test3))
+    #data = read_input("input.txt")
+    #print(run_through_maze(data))
 
 
 if __name__ == "__main__":
