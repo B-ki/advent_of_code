@@ -75,9 +75,6 @@ def test_all_obstacles(array: np.array, start: list[int]) -> int:
     clean_array = np.copy(array)
     count_loop = get_loop(array, start)
     positions = get_all_X_positions(array)
-    clean_array[7, 7] = "#"
-    print(array)
-    print(clean_array)
     for position in positions:
         new_array = np.copy(clean_array)
         new_array[position[1], position[0]] = "#"
@@ -93,7 +90,6 @@ def get_loop(array: np.array, start: list[int]) -> int:
     max_y = array.shape[0]
     count_x = 0
     while count_x < 100:
-        print(array)
         if array[y, x] == "X":
             count_x += 1
         else:
@@ -110,12 +106,10 @@ def get_loop(array: np.array, start: list[int]) -> int:
             array[y, x] = "X"
             x = get_next_x(x, direction)
             y = get_next_y(y, direction)
-    print(array)
     return 1
 
 
 def get_X_array(array: np.array, start: list[int]) -> np.array:
-    print("Moving from", start)
     x = start[0]
     y = start[1]
     direction = start[2]
@@ -129,7 +123,6 @@ def get_X_array(array: np.array, start: list[int]) -> np.array:
             count_x = 0
         if check_last_cell(x, y, direction, max_x, max_y):
             array[y, x] = "X"
-            print(array)
             return array
         elif check_obstacle(array, x, y, direction) != -1:
             array[y, x] = "X"
@@ -229,10 +222,8 @@ def get_input(file_path: str) -> np.array:
 
 def main():
     print("Hello, World!")
-    map_example = get_input("example.txt")
+    map_example = get_input("input.txt")
     print(test_all_obstacles(map_example, find_start(map_example)))
-    #map_input = get_input("input.txt")
-    #print(get_X_array(map_input, find_start(map_input)))
 
 
 if __name__ == "__main__":
