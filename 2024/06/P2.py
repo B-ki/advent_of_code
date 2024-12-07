@@ -33,52 +33,35 @@ def get_all_X_positions(array: np.array) -> list[list[int]]:
 
 def stop_loop(array: np.array, x: int, y: int, direction: int,
               max_x: int, max_y: int) -> bool:
-    if x < 0 or x >= max_x or y < 0 or y >= max_y:
+    if (
+            (direction == UP and array[y, x] == '0')
+            or (direction == RIGHT and array[y, x] == '1')
+            or (direction == DOWN and array[y, x] == '2')
+            or (direction == LEFT and array[y, x] == '3')
+        ):
         return True
     return False
 
 
-def new_map_symbol(symbol: str, direction: int) -> str:
-    if symbol == "+":
-        return "+"
+def new_map_symbol(direction: int) -> int:
     if direction == UP:
-        if symbol == "-":
-            return "+"
-        elif symbol == "d":
-            return "|"
-        else:
-           return "u"
+        return UP
     elif direction == RIGHT:
-        if symbol == "|":
-            return "+"
-        elif symbol == "l":
-            return "-"
-        else:
-            return "r"
+        return RIGHT
     elif direction == DOWN:
-        if symbol == "-":
-            return "+"
-        elif symbol == "u":
-            return "|"
-        else:
-            return "d"
+        return DOWN
     else:
-        if symbol == "|":
-            return "+"
-        elif symbol == "r":
-            return "-"
-        else:
-            return "l"
+        return LEFT
 
 
 def test_all_obstacles(array: np.array, start: list[int]) -> int:
     clean_array = np.copy(array)
-    count_loop = get_loop(array, start)
-    positions = get_all_X_positions(array)
-    for position in positions:
-        new_array = np.copy(clean_array)
-        new_array[position[1], position[0]] = "#"
-        count_loop += get_loop(new_array, start)
+    count_loop = 0
+    for y in range(array.shape[0]):
+        for x in range(array.shape[1]):
+            new_array = np.copy(clean_array)
+            new_array[y, x] = "#"
+            count_loop += get_loop(new_array, start)
     return count_loop
 
 
@@ -88,22 +71,17 @@ def get_loop(array: np.array, start: list[int]) -> int:
     direction = start[2]
     max_x = array.shape[1]
     max_y = array.shape[0]
-    count_x = 0
-    while count_x < 100:
-        if array[y, x] == "X":
-            count_x += 1
-        else:
-            count_x = 0
+    while stop_loop(array, x, y, direction, max_x, max_y) is False:
         if check_last_cell(x, y, direction, max_x, max_y):
-            array[y, x] = "X"
+            array[y, x] = new_map_symbol(direction)
             return 0
         elif check_obstacle(array, x, y, direction) != -1:
-            array[y, x] = "X"
             direction = check_obstacle(array, x, y, direction)
+            array[y, x] = new_map_symbol(direction)
             x = get_next_x(x, direction)
             y = get_next_y(y, direction)
         else:
-            array[y, x] = "X"
+            array[y, x] = new_map_symbol(direction)
             x = get_next_x(x, direction)
             y = get_next_y(y, direction)
     return 1
