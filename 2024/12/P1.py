@@ -14,18 +14,15 @@ def get_score(grid: np.array) -> None:
             x, y = queue.popleft()
             visited[x, y] = True
             new_grid[x, y] = new_letter
-            print(f"new_grid[{x}, {y}] = {new_letter}")
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
                 if (
                         0 <= nx < rows and 0 <= ny < cols 
-                        and not visited[(x, y)]
+                        and not visited[(nx, ny)]
                         and grid[nx, ny] == letter
                     ):
                     visited[(nx, ny)] = True
                     queue.append((nx, ny))
-
-    print(new_grid)
 
     for x in range(rows):
         for y in range(cols):
@@ -38,8 +35,8 @@ def get_score(grid: np.array) -> None:
                     dict_letter[letter] = 0
                     new_str = letter + "0"
 
-                print(f"New letter: {new_str}, x: {x}, y: {y}")
-                bfs_area(x, y, grid[x, y], new_str)
+                #print(f"New letter: {new_str}, letter: {letter}, x: {x}, y: {y}")
+                bfs_area(x, y, letter, new_str)
 
     print(new_grid)
                     
