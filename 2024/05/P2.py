@@ -60,10 +60,48 @@ def check_all_instructions(p2: list[list[int]],
                            dict_after: dict[int, list[int]]) -> int:
     count = 0
     for instruction in p2:
-        if check_instruction(instruction, dict_before, dict_after) == True:
-            print(int((len(instruction)/2)))
+        if check_instruction(instruction, dict_before, dict_after) == False:
+            instruction = correct_instruction(instruction, dict_before, dict_after)
             count += instruction[int(len(instruction)/2)]
     return count
+
+
+def find_first_error(instruction: list[int],
+                             dict_before: dict[int, list[int]],
+                             dict_after: dict[int, list[int]]) -> tuple[int, int]:
+    for i in range(1, len(instruction)):
+        for j in range(0, i):
+            if (
+                    instruction[i] in dict_before
+                    and instruction[j] in dict_before[instruction[i]]
+                ): 
+                return -i, -j
+        for j in range(i+1, len(instruction)):
+            if (
+                    instruction[i] in dict_after
+                    and instruction[j] in dict_after[instruction[i]]
+                ): 
+                return i, j
+    return 0, 0
+
+
+def correct_instruction(instruction: list[int],
+                        dict_before: dict[int, list[int]],
+                        dict_after: dict[int, list[int]]) -> list[int]:
+    i, j = find_first_error(instruction, dict_before, dict_after)
+    #print(instruction, "error:", i, j)
+    while i != 0:
+        if i < 0:
+            tmp = instruction[-i]
+            instruction[-i] = instruction[-j]
+            instruction[-j] = tmp
+        else:
+            tmp = instruction[i]
+            instruction[i] = instruction[j]
+            instruction[j] = tmp
+        i, j = find_first_error(instruction, dict_before, dict_after)
+        #print(instruction, "error:", i, j)
+    return instruction
 
 
 def main():
@@ -77,7 +115,6 @@ def main():
     print(dict_before)
     print(dict_after)
     print(check_all_instructions(p2, dict_before, dict_after))
-
 
 
 if __name__ == "__main__":

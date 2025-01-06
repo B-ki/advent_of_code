@@ -31,8 +31,7 @@ def get_all_X_positions(array: np.array) -> list[list[int]]:
     return positions
 
 
-def stop_loop(array: np.array, x: int, y: int, direction: int,
-              max_x: int, max_y: int) -> bool:
+def stop_loop(array: np.array, x: int, y: int, direction: int) -> bool:
     if (
             (direction == UP and array[y, x] == '0')
             or (direction == RIGHT and array[y, x] == '1')
@@ -56,12 +55,15 @@ def new_map_symbol(direction: int) -> int:
 
 def test_all_obstacles(array: np.array, start: list[int]) -> int:
     clean_array = np.copy(array)
+    array = get_X_array(array, start)
+    count = count_X(array)
+    positions = get_all_X_positions(array)
+    print("count_X", count, "len(positions)", len(positions))
     count_loop = 0
-    for y in range(array.shape[0]):
-        for x in range(array.shape[1]):
-            new_array = np.copy(clean_array)
-            new_array[y, x] = "#"
-            count_loop += get_loop(new_array, start)
+    for position in positions:
+        new_array = np.copy(clean_array)
+        new_array[position[1], position[0]] = "#"
+        count_loop += get_loop(new_array, start)
     return count_loop
 
 
@@ -71,7 +73,7 @@ def get_loop(array: np.array, start: list[int]) -> int:
     direction = start[2]
     max_x = array.shape[1]
     max_y = array.shape[0]
-    while stop_loop(array, x, y, direction, max_x, max_y) is False:
+    while stop_loop(array, x, y, direction) is False:
         if check_last_cell(x, y, direction, max_x, max_y):
             array[y, x] = new_map_symbol(direction)
             return 0
